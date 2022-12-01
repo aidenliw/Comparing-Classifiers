@@ -1,7 +1,7 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
-from FishersLinearDiscriminant import FishersLinearDiscriminant as fld
+from FishersLinearDiscriminant import FishersLinearDiscriminant
 
 
 # Import data from the csv file by using pandas and convert it to numpy array
@@ -46,6 +46,8 @@ def separate_data(data):
 
 # Execute the methods
 def run():
+    # Instantiate the classes
+    fld = FishersLinearDiscriminant()
     # Get data from imported csv file
     data = import_data()
     # categorize data by classes
@@ -58,24 +60,33 @@ def run():
     # print(len(training_set_b))
     training_set_a_xy = training_set_a[:, 1:3]
     training_set_b_xy = training_set_b[:, 1:3]
+    testing_set_a_xy = testing_set_a[:, 1:3]
+    testing_set_b_xy = testing_set_b[:, 1:3]
     # print(training_set_a_xy)
-    # Sw, w, slope, y_int = calculate_fld(training_set_a_xy, training_set_b_xy, 0)
+    # Sw, w, slope, y_int = train_fld_dataset(training_set_a_xy, training_set_b_xy, 0)
     scaler = 10000000
     threshold = -0.00000119
-    Sw, w, slope, y_int = fld.calculate_fld(training_set_a_xy, training_set_b_xy, threshold)
-
+    Sw, w, slope, y_int = fld.train_fld_dataset(training_set_a_xy, training_set_b_xy, threshold)
     # print("Sw: ", Sw)
     # print("w: ", w)
 
+    # Find the best case scenario of the threshold for the lieaner discriminant
     # for thresh in numpy.arange(-0.0000011, -0.0000013, -0.00000001):
     #     correct, error = fld.calculate_error(training_set_a_xy, training_set_b_xy, w, thresh)
     #     print("threshold = " + '{:.8f}'.format(round(thresh, 8))
     #           + "\t num of errors = " + str(error) + "\t Correct = " + str(correct))
 
-    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
-    plt.show()
-    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
-    plt.show()
+    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    # plt.show()
+    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    # plt.show()
+
+    true_positive, false_negative, true_negative, false_positive = \
+        fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w, threshold)
+    print(true_positive)
+    print(false_negative)
+    print(true_negative)
+    print(false_positive)
 
 
 run()

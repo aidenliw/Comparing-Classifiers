@@ -9,7 +9,7 @@ class FishersLinearDiscriminant:
 
     # Calculate the data values of Sw, w, slope and y-intercept of the discriminant line
     # By using the fishers linear discriminant algorithm
-    def calculate_fld(self, data_a, data_b, thresh):
+    def train_fld_dataset(self, data_a, data_b, thresh):
 
         # Calculate the mean of each dataset by using numpy.mean function
         mean_a = numpy.mean(data_a, axis=0)
@@ -32,6 +32,40 @@ class FishersLinearDiscriminant:
         y_intercept = thresh / _w[1]
 
         return _Sw, _w, _slope, y_intercept
+
+    # Test the dataset by given dataset, w, and thresh value
+    # Return true_positive, false_negative, true_negative, false_positive values
+    def test_fld_dataset(self, data_a, data_b, _w, thresh):
+        # Generate category label based on the original dataset
+        x_labels = numpy.concatenate((numpy.ones(len(data_a)),
+                                      numpy.full(len(data_b), fill_value=2, dtype=numpy.int)))
+
+        X = numpy.concatenate((data_a, data_b))
+
+        # Get a list of predictions, if w^tx + Θ >= 0, return 1, elif w^tx + Θ < 0, return -1
+        prediction = numpy.sign(numpy.dot(_w, X.T) + thresh)
+        # Change all the -1 value to 2, for matching up the class value
+        prediction[prediction < 0] = 2
+
+        true_positive = 0
+        false_negative = 0
+        true_negative = 0
+        false_positive = 0
+
+        # Get true_positive, false_negative, true_negative, false_positive from comparison
+        for i in range(len(x_labels)):
+            if x_labels[i] == 1:
+                if x_labels[i] == prediction[i]:
+                    true_positive += 1
+                elif x_labels[i] != prediction[i] :
+                    false_negative += 1
+            elif x_labels[i] == 2:
+                if x_labels[i] == prediction[i]:
+                    true_negative += 1
+                elif x_labels[i] != prediction[i] :
+                    false_positive += 1
+
+        return true_positive, false_negative, true_negative, false_positive
 
     # Plot the data with original classes
     def plot_original_data(self, data_a, data_b, _w, _slope, _y_int, _scaler):
@@ -97,4 +131,6 @@ class FishersLinearDiscriminant:
         error = numpy.sum(prediction != x_labels)
 
         return correct, error
+
+
 
