@@ -101,7 +101,7 @@ class FishersLinearDiscriminant:
         prediction[prediction < 0] = 2
 
         error = numpy.sum(prediction != x_labels)
-        print("num errors = ", error)
+        # print("num errors = ", error)
 
         # Find the indices of array elements that are non-zero
         errorIndex = numpy.argwhere(prediction - x_labels)

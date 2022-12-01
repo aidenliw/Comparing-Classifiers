@@ -1,12 +1,12 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
+import time
 from FishersLinearDiscriminant import FishersLinearDiscriminant
 
 
 # Import data from the csv file by using pandas and convert it to numpy array
 def import_data():
-
     # Import data from the Excel file by using pandas
     data = pandas.read_csv('accelerometer.csv', header=0)
 
@@ -27,11 +27,11 @@ def categorize_data(dataset):
     for item in dataset:
         indicator = int(item[indicator_index])
         if indicator == 1:
-            class_a.append(item[indicator_index+1:])
+            class_a.append(item[indicator_index + 1:])
         elif indicator == 2:
-            class_b.append(item[indicator_index+1:])
+            class_b.append(item[indicator_index + 1:])
         elif indicator == 3:
-            class_c.append(item[indicator_index+1:])
+            class_c.append(item[indicator_index + 1:])
     return numpy.asarray(class_a), numpy.asarray(class_b), numpy.asarray(class_c)
 
 
@@ -46,47 +46,55 @@ def separate_data(data):
 
 # Execute the methods
 def run():
+    print(" > Applying Fishers Linear Discriminant Classification")
     # Instantiate the classes
     fld = FishersLinearDiscriminant()
     # Get data from imported csv file
     data = import_data()
     # categorize data by classes
     class_a, class_b, class_c = categorize_data(data)
-    # print(class_a)
     # separate data for training and testing sets
     training_set_a, testing_set_a = separate_data(class_a)
     training_set_b, testing_set_b = separate_data(class_b)
-    # print(len(training_set_a))
-    # print(len(training_set_b))
+    # Get attribute x and y from the dataset for testing
     training_set_a_xy = training_set_a[:, 1:3]
     training_set_b_xy = training_set_b[:, 1:3]
     testing_set_a_xy = testing_set_a[:, 1:3]
     testing_set_b_xy = testing_set_b[:, 1:3]
-    # print(training_set_a_xy)
-    # Sw, w, slope, y_int = train_fld_dataset(training_set_a_xy, training_set_b_xy, 0)
+
+    # Train the data by using Fishers Linear Discriminant algorithm
     scaler = 10000000
     threshold = -0.00000119
+    start = time.time()
     Sw, w, slope, y_int = fld.train_fld_dataset(training_set_a_xy, training_set_b_xy, threshold)
+    end = time.time()
+    print(" > Computational Times for training data is " + '{:.10f}'.format(end - start) + " milliseconds")
     # print("Sw: ", Sw)
     # print("w: ", w)
 
-    # Find the best case scenario of the threshold for the lieaner discriminant
+    # # Find the best case scenario of the threshold for the lieaner discriminant
     # for thresh in numpy.arange(-0.0000011, -0.0000013, -0.00000001):
     #     correct, error = fld.calculate_error(training_set_a_xy, training_set_b_xy, w, thresh)
     #     print("threshold = " + '{:.8f}'.format(round(thresh, 8))
     #           + "\t num of errors = " + str(error) + "\t Correct = " + str(correct))
 
-    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
-    # plt.show()
-    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
-    # plt.show()
+    # Plot the data
+    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    plt.show()
+    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    plt.show()
 
+    # Testing the data
+    start = time.time()
     true_positive, false_negative, true_negative, false_positive = \
         fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w, threshold)
-    print(true_positive)
-    print(false_negative)
-    print(true_negative)
-    print(false_positive)
+    end = time.time()
+    print(" > Computational Times for Testing data is " + '{:.10f}'.format(end - start) + " milliseconds")
+
+    print(" True Positive: \t", true_positive)
+    print(" False Negative: \t", false_negative)
+    print(" True Negative: \t", true_negative)
+    print(" False Positive: \t", false_positive)
 
 
 run()
