@@ -92,17 +92,17 @@ def run_fishers_linear_discriminant():
     print(" False Positive: ", false_positive)
 
     # Plot the data
-    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
-    # plt.show()
-    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
-    # plt.show()
+    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    plt.show()
+    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    plt.show()
     # fld.plot_original_data(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, scaler)
     # plt.show()
     # fld.plot_data_with_error(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, threshold, scaler)
     # plt.show()
 
     # Sklearn implementation
-    print(" \n> Applying Fishers Linear Discriminant Classification By Using Sklearn")
+    print(" \n > Applying Fishers Linear Discriminant Classification By Using Sklearn")
     # Train the data by using sklearn
     start = time.time()
     thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a_xy, training_set_b_xy)
