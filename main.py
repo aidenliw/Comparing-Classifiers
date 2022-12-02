@@ -45,7 +45,7 @@ def separate_data(data):
 
 # Execute the methods
 def run():
-    print(" > Applying Fishers Linear Discriminant Classification")
+    print("\n > Applying Fishers Linear Discriminant Classification")
     # Instantiate the classes
     fld = FishersLinearDiscriminant()
     # Get data from imported csv file
@@ -77,13 +77,6 @@ def run():
     print(" > Computational Times for training data is " +
           '{:.2f}'.format((end - start) * 1000) + " milliseconds")
 
-    # Train the data by using Fishers Linear Discriminant algorithm from sklearn
-    start = time.time()
-    thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a_xy, training_set_b_xy)
-    end = time.time()
-    print(" > Computational Times for training data by using sklearn is "
-          + '{:.2f}'.format((end - start) * 1000) + " milliseconds")
-
     # Test the data
     start = time.time()
     true_positive, false_negative, true_negative, false_positive = \
@@ -91,7 +84,6 @@ def run():
     end = time.time()
     print(" > Computational Times for Testing data is " +
           '{:.2f}'.format((end - start) * 1000) + " milliseconds")
-
     print(" True Positive:  ", true_positive)
     print(" False Negative: ", false_negative)
     print(" True Negative:  ", true_negative)
@@ -103,11 +95,32 @@ def run():
     fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
     plt.show()
 
-    # # Plot the data
-    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, scaler_sk)
-    # plt.show()
-    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
-    # plt.show()
+    # Sklearn implementation
+    print(" \n> Applying Fishers Linear Discriminant Classification using sklearn")
+    # Train the data by using sklearn
+    start = time.time()
+    thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a_xy, training_set_b_xy)
+    end = time.time()
+    print(" > Computational Times for training data is "
+          + '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+
+    # Test the data by using sklearn
+    start = time.time()
+    true_positive, false_negative, true_negative, false_positive = \
+        fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w_sk, thresh_sk)
+    end = time.time()
+    print(" > Computational Times for Testing data is " +
+          '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+    print(" True Positive:  ", true_positive)
+    print(" False Negative: ", false_negative)
+    print(" True Negative:  ", true_negative)
+    print(" False Positive: ", false_positive)
+
+    # Plot the data
+    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, scaler_sk)
+    plt.show()
+    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
+    plt.show()
 
 
 run()

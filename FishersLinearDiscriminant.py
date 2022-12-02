@@ -29,7 +29,7 @@ class FishersLinearDiscriminant:
 
         # Calculate the slope and the y-intercept of the discriminant line
         _slope = -_w[0] / _w[1]
-        y_intercept = -thresh / _w[1]
+        y_intercept = thresh / _w[1]
 
         return _Sw, _w, _slope, y_intercept
 
@@ -58,7 +58,7 @@ class FishersLinearDiscriminant:
         X = numpy.concatenate((data_a, data_b))
 
         # Get a list of predictions, if w^tx + Θ >= 0, return 1, elif w^tx + Θ < 0, return -1
-        prediction = numpy.sign(numpy.dot(_w, X.T) + thresh)
+        prediction = numpy.sign(numpy.dot(_w, X.T) - thresh)
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
@@ -80,7 +80,7 @@ class FishersLinearDiscriminant:
         # Plot the discriminant line
         axes = plt.gca()
         axes.set_aspect('equal', adjustable='box')
-        x_vals = numpy.linspace(-3, 5, 100)
+        x_vals = numpy.linspace(-5, 5, 100)
         # x_vals = numpy.array(axes.get_xlim())
         y_vals = _y_int + _slope * x_vals
         plt.plot(x_vals, y_vals, 'c--', label='Discriminant Line')
@@ -100,7 +100,7 @@ class FishersLinearDiscriminant:
         X = numpy.concatenate((data_a, data_b))
 
         # Get a list of predictions, if w^tx + Θ >= 0, return 1, elif w^tx + Θ < 0, return -1
-        prediction = numpy.sign(numpy.dot(_w, X.T) + thresh)
+        prediction = numpy.sign(numpy.dot(_w, X.T) - thresh)
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
