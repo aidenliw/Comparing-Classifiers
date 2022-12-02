@@ -65,12 +65,13 @@ class FishersLinearDiscriminant:
         # Plot the discriminant line
         axes = plt.gca()
         axes.set_aspect('equal', adjustable='box')
-        x_vals = numpy.array(axes.get_xlim())
+        x_vals = numpy.linspace(-5, 5, 100)
+        # x_vals = numpy.array(axes.get_xlim())
         y_vals = _y_int + _slope * x_vals
         plt.plot(x_vals, y_vals, 'g--', label='Discriminant Line')
 
         # Calculate and plot the line of the _w
-        plt.plot([-_scaler * _w[0], _scaler * _w[0]], [-_scaler * _w[1], _scaler * _w[1]], 'y--', label='_w')
+        plt.plot([-_scaler * _w[0], _scaler * _w[0]], [-_scaler * _w[1], _scaler * _w[1]], 'y--', label='W line')
         plt.legend(loc='best')
         plt.title('Fishers Linear Discriminant')
 
