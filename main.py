@@ -45,7 +45,7 @@ def separate_data(data):
 
 # Execute the methods
 def run_fishers_linear_discriminant():
-    print("\n > Applying Fishers Linear Discriminant Classification")
+
     # Instantiate the classes
     fld = FishersLinearDiscriminant()
     # Get data from imported csv file
@@ -60,7 +60,12 @@ def run_fishers_linear_discriminant():
     training_set_b_xy = training_set_b[:, 1:3]
     testing_set_a_xy = testing_set_a[:, 1:3]
     testing_set_b_xy = testing_set_b[:, 1:3]
+    print("\n Loaded training set for class A with instances: " + str(len(training_set_a_xy)))
+    print(" Loaded training set for class B with instances: " + str(len(training_set_b_xy)))
+    print(" Loaded testing set for class A with instances: " + str(len(testing_set_a)))
+    print(" Loaded testing set for class B with instances: " + str(len(testing_set_b)))
 
+    print("\n > Applying Fishers Linear Discriminant Classification")
     # Threshold trail and error
     # fld.fld_threshold_trail_and_error(training_set_a_xy, training_set_b_xy)
 
@@ -87,10 +92,10 @@ def run_fishers_linear_discriminant():
     print(" False Positive: ", false_positive)
 
     # Plot the data
-    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
-    plt.show()
-    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
-    plt.show()
+    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    # plt.show()
+    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    # plt.show()
     # fld.plot_original_data(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, scaler)
     # plt.show()
     # fld.plot_data_with_error(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, threshold, scaler)

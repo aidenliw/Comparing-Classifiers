@@ -29,7 +29,7 @@ class FishersLinearDiscriminant:
 
         # Calculate the slope and the y-intercept of the discriminant line
         _slope = -_w[0] / _w[1]
-        y_intercept = thresh / _w[1]
+        y_intercept = -thresh / _w[1]
 
         return _Sw, _w, _slope, y_intercept
 
@@ -44,9 +44,10 @@ class FishersLinearDiscriminant:
         w = lda.coef_
         slope_sk = -lda.coef_[0][0] / lda.coef_[0][1]
         y_intercept = lda.intercept_
-        thresh_sk = y_intercept / lda.coef_[0][1]
+        thresh_sk1 = -y_intercept[0] / lda.coef_[0][1]
+        thresh_sk = -lda.tol
         # covariance = lda.covariance_
-        return thresh_sk[0], w[0], slope_sk, y_intercept[0]
+        return thresh_sk, w[0], slope_sk, y_intercept[0]
 
     # Test the dataset by given dataset, w, and thresh value
     # Return true_positive, false_negative, true_negative, false_positive values
@@ -82,7 +83,7 @@ class FishersLinearDiscriminant:
         axes.set_aspect('equal', adjustable='box')
         x_vals = numpy.linspace(-5, 5, 100)
         # x_vals = numpy.array(axes.get_xlim())
-        y_vals = -_y_int + _slope * x_vals
+        y_vals = _y_int + _slope * x_vals
         plt.plot(x_vals, y_vals, 'c--', label='Discriminant Line')
 
         # Calculate and plot the line of the _w
