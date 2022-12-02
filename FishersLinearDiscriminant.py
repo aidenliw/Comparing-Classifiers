@@ -44,7 +44,7 @@ class FishersLinearDiscriminant:
         w = lda.coef_
         slope_sk = -lda.coef_[0][0] / lda.coef_[0][1]
         y_intercept = lda.intercept_
-        thresh_sk = -y_intercept / lda.coef_[0][1]
+        thresh_sk = y_intercept / lda.coef_[0][1]
         # covariance = lda.covariance_
         return thresh_sk[0], w[0], slope_sk, y_intercept[0]
 
@@ -58,7 +58,7 @@ class FishersLinearDiscriminant:
         X = numpy.concatenate((data_a, data_b))
 
         # Get a list of predictions, if w^tx + Θ >= 0, return 1, elif w^tx + Θ < 0, return -1
-        prediction = numpy.sign(numpy.dot(_w, X.T) - thresh)
+        prediction = numpy.sign(numpy.dot(_w, X.T) + thresh)
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
@@ -74,15 +74,15 @@ class FishersLinearDiscriminant:
     def plot_original_data(self, data_a, data_b, _w, _slope, _y_int, _scaler):
 
         # Plot the two dataset
-        plt.scatter(x=data_a[:, 0], y=data_a[:, 1], c='red', marker='.', label='class x')
-        plt.scatter(x=data_b[:, 0], y=data_b[:, 1], c='blue', marker='.', label='class y')
+        plt.scatter(x=data_a[:, 0], y=data_a[:, 1], c='red', marker='.', label='Class 1')
+        plt.scatter(x=data_b[:, 0], y=data_b[:, 1], c='blue', marker='.', label='Class 2')
 
         # Plot the discriminant line
         axes = plt.gca()
         axes.set_aspect('equal', adjustable='box')
         x_vals = numpy.linspace(-5, 5, 100)
         # x_vals = numpy.array(axes.get_xlim())
-        y_vals = _y_int + _slope * x_vals
+        y_vals = -_y_int + _slope * x_vals
         plt.plot(x_vals, y_vals, 'c--', label='Discriminant Line')
 
         # Calculate and plot the line of the _w
@@ -100,7 +100,7 @@ class FishersLinearDiscriminant:
         X = numpy.concatenate((data_a, data_b))
 
         # Get a list of predictions, if w^tx + Θ >= 0, return 1, elif w^tx + Θ < 0, return -1
-        prediction = numpy.sign(numpy.dot(_w, X.T) - thresh)
+        prediction = numpy.sign(numpy.dot(_w, X.T) + thresh)
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
@@ -108,7 +108,7 @@ class FishersLinearDiscriminant:
         errorIndex = numpy.argwhere(prediction - x_labels)
 
         Q2 = X[errorIndex]
-        plt.scatter(Q2[:, 0, 0], Q2[:, 0, 1], c='g', marker='.', label="errors")
+        plt.scatter(Q2[:, 0, 0], Q2[:, 0, 1], c='g', marker='.', label="Errors")
         plt.legend(loc='best')
         plt.title('Fishers Linear Discriminant With Errors')
 
@@ -130,5 +130,13 @@ class FishersLinearDiscriminant:
 
         return correct, error
 
+    # Find the best case scenario of the threshold for the lieaner discriminant
+    def fld_threshold_trail_and_error(self, data_a, data_b):
+        print(" > Threshold Trail and error")
+        Sw, w, slope, y_int = self.train_fld_dataset(data_a, data_b, 0)
+        for thresh in numpy.arange(0.000005, -0.000005, -0.00000001):
+            correct, error = self.calculate_error(data_a, data_b, w, thresh)
+            print(" threshold = " + '{:.8f}'.format(round(thresh, 8))
+                  + "\t num of errors = " + str(error) + "\t Correct = " + str(correct))
 
 
