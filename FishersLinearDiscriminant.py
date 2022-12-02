@@ -47,23 +47,11 @@ class FishersLinearDiscriminant:
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
-        true_positive = 0
-        false_negative = 0
-        true_negative = 0
-        false_positive = 0
-
         # Get true_positive, false_negative, true_negative, false_positive from comparison
-        for i in range(len(x_labels)):
-            if x_labels[i] == 1:
-                if x_labels[i] == prediction[i]:
-                    true_positive += 1
-                elif x_labels[i] != prediction[i] :
-                    false_negative += 1
-            elif x_labels[i] == 2:
-                if x_labels[i] == prediction[i]:
-                    true_negative += 1
-                elif x_labels[i] != prediction[i] :
-                    false_positive += 1
+        true_positive = numpy.sum((prediction == x_labels) & (x_labels == 1))
+        false_negative = numpy.sum((prediction != x_labels) & (x_labels == 1))
+        true_negative = numpy.sum((prediction == x_labels) & (x_labels == 2))
+        false_positive = numpy.sum((prediction != x_labels) & (x_labels == 2))
 
         return true_positive, false_negative, true_negative, false_positive
 

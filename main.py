@@ -68,7 +68,7 @@ def run():
     start = time.time()
     Sw, w, slope, y_int = fld.train_fld_dataset(training_set_a_xy, training_set_b_xy, threshold)
     end = time.time()
-    print(" > Computational Times for training data is " + '{:.10f}'.format(end - start) + " milliseconds")
+    print(" > Computational Times for training data is " + '{:.2f}'.format((end - start)*1000) + " milliseconds")
     # print("Sw: ", Sw)
     # print("w: ", w)
 
@@ -78,23 +78,23 @@ def run():
     #     print("threshold = " + '{:.8f}'.format(round(thresh, 8))
     #           + "\t num of errors = " + str(error) + "\t Correct = " + str(correct))
 
-    # Plot the data
-    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
-    plt.show()
-    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
-    plt.show()
-
     # Testing the data
     start = time.time()
     true_positive, false_negative, true_negative, false_positive = \
         fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w, threshold)
     end = time.time()
-    print(" > Computational Times for Testing data is " + '{:.10f}'.format(end - start) + " milliseconds")
+    print(" > Computational Times for Testing data is " + '{:.2f}'.format((end - start)*1000) + " milliseconds")
 
-    print(" True Positive: \t", true_positive)
-    print(" False Negative: \t", false_negative)
-    print(" True Negative: \t", true_negative)
-    print(" False Positive: \t", false_positive)
+    print(" True Positive:  ", true_positive)
+    print(" False Negative: ", false_negative)
+    print(" True Negative:  ", true_negative)
+    print(" False Positive: ", false_positive)
+
+    # Plot the data
+    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    plt.show()
+    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    plt.show()
 
 
 run()
