@@ -104,14 +104,8 @@ class FishersLinearDiscriminant:
         # Change all the -1 value to 2, for matching up the class value
         prediction[prediction < 0] = 2
 
-        error = numpy.sum(prediction != x_labels)
-        # print("num errors = ", error)
-
         # Find the indices of array elements that are non-zero
         errorIndex = numpy.argwhere(prediction - x_labels)
-
-        # Q = numpy.squeeze(X[errorIndex])
-        # plt.scatter(Q[:, 0], Q[:, 1], c='g', marker='o')
 
         Q2 = X[errorIndex]
         plt.scatter(Q2[:, 0, 0], Q2[:, 0, 1], c='g', marker='.', label="errors")
