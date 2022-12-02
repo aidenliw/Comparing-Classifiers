@@ -44,7 +44,7 @@ def separate_data(data):
 
 
 # Execute the methods
-def run():
+def run_fishers_linear_discriminant():
     print("\n > Applying Fishers Linear Discriminant Classification")
     # Instantiate the classes
     fld = FishersLinearDiscriminant()
@@ -96,7 +96,7 @@ def run():
     plt.show()
 
     # Sklearn implementation
-    print(" \n> Applying Fishers Linear Discriminant Classification using sklearn")
+    print(" \n> Applying Fishers Linear Discriminant Classification By Using Sklearn")
     # Train the data by using sklearn
     start = time.time()
     thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a_xy, training_set_b_xy)
@@ -123,4 +123,4 @@ def run():
     plt.show()
 
 
-run()
+run_fishers_linear_discriminant()
