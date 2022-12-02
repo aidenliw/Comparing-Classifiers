@@ -1,14 +1,14 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
-
+import sklearn.discriminant_analysis
 numpy.set_printoptions(suppress=True)
 
 
 class FishersLinearDiscriminant:
 
-    # Calculate the data values of Sw, w, slope and y-intercept of the discriminant line
-    # By using the fishers linear discriminant algorithm
+    # Train the given dataset by using the fishers linear discriminant algorithm
+    # Return Sw, w, slope and y-intercept of the discriminant line
     def train_fld_dataset(self, data_a, data_b, thresh):
 
         # Calculate the mean of each dataset by using numpy.mean function
@@ -24,14 +24,29 @@ class FishersLinearDiscriminant:
         covariance_b = numpy.dot(mean_b_centered.T, mean_b_centered)
         _Sw = covariance_a + covariance_b
 
-        # Calculate the _w of the Linear Discriminant
+        # Calculate the w of the Linear Discriminant
         _w = numpy.dot(numpy.linalg.inv(_Sw), (mean_a - mean_b))
 
         # Calculate the slope and the y-intercept of the discriminant line
         _slope = -_w[0] / _w[1]
-        y_intercept = thresh / _w[1]
+        y_intercept = -thresh / _w[1]
 
         return _Sw, _w, _slope, y_intercept
+
+    # Train the given dataset by using LinearDiscriminantAnalysis from sklearn library
+    # Return slop and
+    def train_fld_dataset_sklearn(self, data_a, data_b):
+        X = numpy.concatenate((data_a, data_b))
+        x_labels = numpy.concatenate((numpy.ones(len(data_a)),
+                                      numpy.full(len(data_b), fill_value=2, dtype=numpy.int)))
+        lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
+        lda.fit(X, x_labels)
+        w = lda.coef_
+        slope_sk = -lda.coef_[0][0] / lda.coef_[0][1]
+        y_intercept = lda.intercept_
+        thresh_sk = -y_intercept / lda.coef_[0][1]
+        # covariance = lda.covariance_
+        return thresh_sk[0], w[0], slope_sk, y_intercept[0]
 
     # Test the dataset by given dataset, w, and thresh value
     # Return true_positive, false_negative, true_negative, false_positive values
@@ -59,16 +74,16 @@ class FishersLinearDiscriminant:
     def plot_original_data(self, data_a, data_b, _w, _slope, _y_int, _scaler):
 
         # Plot the two dataset
-        plt.scatter(x=data_a[:, 0], y=data_a[:, 1], c='red', marker='.')
-        plt.scatter(x=data_b[:, 0], y=data_b[:, 1], c='blue', marker='.')
+        plt.scatter(x=data_a[:, 0], y=data_a[:, 1], c='red', marker='.', label='class x')
+        plt.scatter(x=data_b[:, 0], y=data_b[:, 1], c='blue', marker='.', label='class y')
 
         # Plot the discriminant line
         axes = plt.gca()
         axes.set_aspect('equal', adjustable='box')
-        x_vals = numpy.linspace(-5, 5, 100)
+        x_vals = numpy.linspace(-3, 5, 100)
         # x_vals = numpy.array(axes.get_xlim())
         y_vals = _y_int + _slope * x_vals
-        plt.plot(x_vals, y_vals, 'g--', label='Discriminant Line')
+        plt.plot(x_vals, y_vals, 'c--', label='Discriminant Line')
 
         # Calculate and plot the line of the _w
         plt.plot([-_scaler * _w[0], _scaler * _w[0]], [-_scaler * _w[1], _scaler * _w[1]], 'y--', label='W line')
@@ -99,7 +114,7 @@ class FishersLinearDiscriminant:
         # plt.scatter(Q[:, 0], Q[:, 1], c='g', marker='o')
 
         Q2 = X[errorIndex]
-        plt.scatter(Q2[:, 0, 0], Q2[:, 0, 1], c='g', marker='.')
+        plt.scatter(Q2[:, 0, 0], Q2[:, 0, 1], c='g', marker='.', label="errors")
         plt.legend(loc='best')
         plt.title('Fishers Linear Discriminant With Errors')
 
