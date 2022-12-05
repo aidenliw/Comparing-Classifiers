@@ -32,7 +32,7 @@ class FishersLinearDiscriminant:
         return _Sw, _w, _slope, y_intercept
 
     # Train the given dataset by using LinearDiscriminantAnalysis from sklearn library
-    # Return slop and
+    # Return threshold, w, slope, and y-intercept of the discriminant line
     def train_fld_dataset_sklearn(self, data_a, data_b):
         X = numpy.concatenate((data_a, data_b))
         x_labels = numpy.concatenate((numpy.ones(len(data_a)),
@@ -47,7 +47,7 @@ class FishersLinearDiscriminant:
         # covariance = lda.covariance_
         return thresh_sk, w[0], slope_sk, y_intercept[0]
 
-    # Test the dataset by given dataset, w, and thresh value
+    # Test the dataset by given w, and threshold value
     # Return true_positive, false_negative, true_negative, false_positive values
     def test_fld_dataset(self, data_a, data_b, _w, thresh):
         # Generate category label based on the original dataset

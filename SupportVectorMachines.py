@@ -19,6 +19,7 @@ class SupportVectorMachines:
 
         return classifier
 
+    # Test the given dataset by using Support Vector Machines from sklearn library
     def test_svm_dataset_sklearn(self, data_a, data_b, classifier):
         # Generate category label based on the original dataset
         x_labels = numpy.concatenate((numpy.ones(len(data_a)),
@@ -37,6 +38,7 @@ class SupportVectorMachines:
 
         return true_positive, false_negative, true_negative, false_positive
 
+    # Plot the data by given kernel type ('linear' or 'rbf')
     def plot_linear_svm_dataset(self, data_a, data_b, kernel):
         X = numpy.concatenate((data_a, data_b))
         y = numpy.concatenate((numpy.ones(len(data_a)),
