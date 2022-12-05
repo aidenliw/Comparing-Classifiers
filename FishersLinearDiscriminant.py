@@ -1,7 +1,7 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
-import sklearn.discriminant_analysis
+from sklearn import discriminant_analysis
 numpy.set_printoptions(suppress=True)
 
 
@@ -14,11 +14,9 @@ class FishersLinearDiscriminant:
         # Calculate the mean of each dataset by using numpy.mean function
         mean_a = numpy.mean(data_a, axis=0)
         mean_b = numpy.mean(data_b, axis=0)
-
         # Subtract the mean from the data
         mean_a_centered = data_a - mean_a
         mean_b_centered = data_b - mean_b
-
         # Calculate the covariance of each dataset by using the equation (X^T*X) without dividing by n-1
         covariance_a = numpy.dot(mean_a_centered.T, mean_a_centered)
         covariance_b = numpy.dot(mean_b_centered.T, mean_b_centered)
@@ -39,7 +37,7 @@ class FishersLinearDiscriminant:
         X = numpy.concatenate((data_a, data_b))
         x_labels = numpy.concatenate((numpy.ones(len(data_a)),
                                       numpy.full(len(data_b), fill_value=2, dtype=numpy.int)))
-        lda = sklearn.discriminant_analysis.LinearDiscriminantAnalysis()
+        lda = discriminant_analysis.LinearDiscriminantAnalysis()
         lda.fit(X, x_labels)
         w = lda.coef_
         slope_sk = -lda.coef_[0][0] / lda.coef_[0][1]
@@ -72,7 +70,7 @@ class FishersLinearDiscriminant:
         return true_positive, false_negative, true_negative, false_positive
 
     # Plot the data with original classes
-    def plot_original_data(self, data_a, data_b, _w, _slope, _y_int, _scaler):
+    def plot_fld_data(self, data_a, data_b, _w, _slope, _y_int, _scaler):
 
         # Plot the two dataset
         plt.scatter(x=data_a[:, 0], y=data_a[:, 1], c='red', marker='.', label='Class 1')
@@ -81,7 +79,7 @@ class FishersLinearDiscriminant:
         # Plot the discriminant line
         axes = plt.gca()
         axes.set_aspect('equal', adjustable='box')
-        x_vals = numpy.linspace(-5, 5, 100)
+        x_vals = numpy.linspace(-3, 5, 100)
         # x_vals = numpy.array(axes.get_xlim())
         y_vals = _y_int + _slope * x_vals
         plt.plot(x_vals, y_vals, 'c--', label='Discriminant Line')
@@ -92,8 +90,8 @@ class FishersLinearDiscriminant:
         plt.title('Fishers Linear Discriminant')
 
     # Plot the data with the errors on the graph
-    def plot_data_with_error(self, data_a, data_b, _w, _slope, _y_int, thresh, _scaler):
-        self.plot_original_data(data_a, data_b, _w, _slope, _y_int, _scaler)
+    def plot_fld_data_with_error(self, data_a, data_b, _w, _slope, _y_int, thresh, _scaler):
+        self.plot_fld_data(data_a, data_b, _w, _slope, _y_int, _scaler)
 
         # Generate category label based on the original dataset
         x_labels = numpy.concatenate((numpy.ones(len(data_a)),

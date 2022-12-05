@@ -1,80 +1,24 @@
-import numpy
-import pandas
 import matplotlib.pyplot as plt
 import time
 from FishersLinearDiscriminant import FishersLinearDiscriminant
+from SupportVectorMachines import SupportVectorMachines
+from DataLoader import set_up_dataset
 
-
-# Import data from the csv file by using pandas and convert it to numpy array
-def import_data():
-    # Import data from the Excel file by using pandas
-    data = pandas.read_csv('accelerometer.csv', header=0)
-
-    # Convert the dataset to a numpy array
-    data_npy = numpy.asarray(data)
-    return data_npy
-
-
-# Separate the dataset by the class indicator value
-def categorize_data(dataset):
-    class_a = []
-    class_b = []
-    class_c = []
-
-    # Get the index of the indicator, the indicator should be at the start of each line of the data
-    indicator_index = 0
-    for item in dataset:
-        indicator = int(item[indicator_index])
-        if indicator == 1:
-            class_a.append(item[indicator_index + 1:])
-        elif indicator == 2:
-            class_b.append(item[indicator_index + 1:])
-        elif indicator == 3:
-            class_c.append(item[indicator_index + 1:])
-    return numpy.asarray(class_a), numpy.asarray(class_b), numpy.asarray(class_c)
-
-
-# Separate the data by first 75% for training, and last 25% for testing
-def separate_data(data):
-    data_length = len(data)
-    pivot = int(data_length * 0.75)
-    training_set = data[:pivot]
-    testing_set = data[pivot:]
-    return training_set, testing_set
-
-
-# Execute the methods
-def run_fishers_linear_discriminant():
+# Execute the FLD methods
+def run_fishers_linear_discriminant(training_set_a, training_set_b, testing_set_a, testing_set_b):
 
     # Instantiate the classes
     fld = FishersLinearDiscriminant()
-    # Get data from imported csv file
-    data = import_data()
-    # categorize data by classes
-    class_a, class_b, class_c = categorize_data(data)
-    # separate data for training and testing sets
-    training_set_a, testing_set_a = separate_data(class_a)
-    training_set_b, testing_set_b = separate_data(class_b)
-    # Get data with attribute x and y from the dataset for testing
-    training_set_a_xy = training_set_a[:, 1:3]
-    training_set_b_xy = training_set_b[:, 1:3]
-    testing_set_a_xy = testing_set_a[:, 1:3]
-    testing_set_b_xy = testing_set_b[:, 1:3]
-    print("\n Loaded training set for class A with instances: " + str(len(training_set_a_xy)))
-    print(" Loaded training set for class B with instances: " + str(len(training_set_b_xy)))
-    print(" Loaded testing set for class A with instances: " + str(len(testing_set_a)))
-    print(" Loaded testing set for class B with instances: " + str(len(testing_set_b)))
-
     print("\n > Applying Fishers Linear Discriminant Classification")
     # Threshold trail and error
-    # fld.fld_threshold_trail_and_error(training_set_a_xy, training_set_b_xy)
+    # fld.fld_threshold_trail_and_error(training_set_a, training_set_b)
 
     # Train the data by using Fishers Linear Discriminant algorithm
     scaler = 8000000
     scaler_sk = 100
     threshold = -0.00000119
     start = time.time()
-    Sw, w, slope, y_int = fld.train_fld_dataset(training_set_a_xy, training_set_b_xy, threshold)
+    Sw, w, slope, y_int = fld.train_fld_dataset(training_set_a, training_set_b, threshold)
     end = time.time()
     print(" > Computational times for training data is " +
           '{:.2f}'.format((end - start) * 1000) + " milliseconds")
@@ -82,7 +26,7 @@ def run_fishers_linear_discriminant():
     # Test the data
     start = time.time()
     true_positive, false_negative, true_negative, false_positive = \
-        fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w, threshold)
+        fld.test_fld_dataset(testing_set_a, testing_set_b, w, threshold)
     end = time.time()
     print(" > Computational times for testing data is " +
           '{:.2f}'.format((end - start) * 1000) + " milliseconds")
@@ -92,20 +36,20 @@ def run_fishers_linear_discriminant():
     print(" False Positive: ", false_positive)
 
     # Plot the data
-    fld.plot_original_data(training_set_a_xy, training_set_b_xy, w, slope, y_int, scaler)
+    fld.plot_fld_data(training_set_a, training_set_b, w, slope, y_int, scaler)
     plt.show()
-    fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w, slope, y_int, threshold, scaler)
+    fld.plot_fld_data_with_error(training_set_a, training_set_b, w, slope, y_int, threshold, scaler)
     plt.show()
-    # fld.plot_original_data(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, scaler)
+    # fld.plot_fld_data(testing_set_a, testing_set_b, w, slope, y_int, scaler)
     # plt.show()
-    # fld.plot_data_with_error(testing_set_a_xy, testing_set_b_xy, w, slope, y_int, threshold, scaler)
+    # fld.plot_fld_data_with_error(testing_set_a, testing_set_b, w, slope, y_int, threshold, scaler)
     # plt.show()
 
     # Sklearn implementation
     print(" \n > Applying Fishers Linear Discriminant Classification By Using Sklearn")
     # Train the data by using sklearn
     start = time.time()
-    thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a_xy, training_set_b_xy)
+    thresh_sk, w_sk, slope_sk, y_int_sk = fld.train_fld_dataset_sklearn(training_set_a, training_set_b)
     end = time.time()
     print(" > Computational Times for training data is "
           + '{:.2f}'.format((end - start) * 1000) + " milliseconds")
@@ -113,7 +57,7 @@ def run_fishers_linear_discriminant():
     # Test the data by using sklearn
     start = time.time()
     true_positive, false_negative, true_negative, false_positive = \
-        fld.test_fld_dataset(testing_set_a_xy, testing_set_b_xy, w_sk, thresh_sk)
+        fld.test_fld_dataset(testing_set_a, testing_set_b, w_sk, thresh_sk)
     end = time.time()
     print(" > Computational Times for Testing data is " +
           '{:.2f}'.format((end - start) * 1000) + " milliseconds")
@@ -123,14 +67,74 @@ def run_fishers_linear_discriminant():
     print(" False Positive: ", false_positive)
 
     # Plot the data
-    # fld.plot_original_data(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, scaler_sk)
+    # fld.plot_fld_data(training_set_a, training_set_b, w_sk, slope_sk, y_int_sk, scaler_sk)
     # plt.show()
-    # fld.plot_data_with_error(training_set_a_xy, training_set_b_xy, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
+    # fld.plot_fld_data_with_error(training_set_a, training_set_b, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
     # plt.show()
-    # fld.plot_original_data(testing_set_a_xy, testing_set_b_xy, w_sk, slope_sk, y_int_sk, scaler_sk)
+    # fld.plot_fld_data(testing_set_a, testing_set_b, w_sk, slope_sk, y_int_sk, scaler_sk)
     # plt.show()
-    # fld.plot_data_with_error(testing_set_a_xy, testing_set_b_xy, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
+    # fld.plot_fld_data_with_error(testing_set_a, testing_set_b, w_sk, slope_sk, y_int_sk, threshold, scaler_sk)
     # plt.show()
 
 
-run_fishers_linear_discriminant()
+# Execute the Support Vector Machines methods
+def run_support_vector_machines(training_set_a, training_set_b, testing_set_a, testing_set_b):
+    # Instantiate the classes
+    svm = SupportVectorMachines()
+    print(" \n > Applying Linear Support Vector Machines By Using Sklearn (It may takes several minutes...)")
+
+    # Train the data
+    start = time.time()
+    cls = svm.train_svm_dataset_sklearn(training_set_a, training_set_b, "linear")
+    end = time.time()
+    print(" > Computational Times for training data is "
+          + '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+
+    # Test the data
+    start = time.time()
+    true_positive, false_negative, true_negative, false_positive = \
+        svm.test_svm_dataset_sklearn(testing_set_a, testing_set_b, cls)
+    print(" True Positive:  ", true_positive)
+    print(" False Negative: ", false_negative)
+    print(" True Negative:  ", true_negative)
+    print(" False Positive: ", false_positive)
+    end = time.time()
+    print(" > Computational Times for Testing data is " +
+          '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+
+    # # Plot the Linear Support Vector Machines data. CAUTION! IT MAY TAKE MORE THAN 10 MINUTES
+    # print("Plotting Linear Support Vector Machines data. It may take more than 10 minutes...")
+    # svm.plot_linear_svm_dataset(training_set_a, training_set_b, "linear")
+
+    print(" \n > Applying RBF Support Vector Machines By Using Sklearn (It may takes several minutes...)")
+
+    # Train the data
+    start = time.time()
+    cls = svm.train_svm_dataset_sklearn(training_set_a, training_set_b, "rbf")
+    end = time.time()
+    print(" > Computational Times for training data is "
+          + '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+
+    # Test the data
+    start = time.time()
+    true_positive, false_negative, true_negative, false_positive = \
+        svm.test_svm_dataset_sklearn(testing_set_a, testing_set_b, cls)
+    print(" True Positive:  ", true_positive)
+    print(" False Negative: ", false_negative)
+    print(" True Negative:  ", true_negative)
+    print(" False Positive: ", false_positive)
+    end = time.time()
+    print(" > Computational Times for Testing data is " +
+          '{:.2f}'.format((end - start) * 1000) + " milliseconds")
+
+    # # Plot the RBF Support Vector Machines data. CAUTION! IT MAY TAKE MORE THAN 10 MINUTES
+    # print("Plotting RBF Support Vector Machines data. It may take more than 10 minutes...")
+    # svm.plot_linear_svm_dataset(training_set_a, training_set_b, "rbf")
+
+
+# Retrieve data
+training_set1, training_set2, testing_set1, testing_set2 = set_up_dataset()
+run_fishers_linear_discriminant(training_set1, training_set2, testing_set1, testing_set2)
+run_support_vector_machines(training_set1, training_set2, testing_set1, testing_set2)
+
+
