@@ -4,6 +4,7 @@ from FishersLinearDiscriminant import FishersLinearDiscriminant
 from SupportVectorMachines import SupportVectorMachines
 from DataLoader import set_up_dataset
 
+
 # Execute the FLD methods
 def run_fishers_linear_discriminant(training_set_a, training_set_b, testing_set_a, testing_set_b):
 

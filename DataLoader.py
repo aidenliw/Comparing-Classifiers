@@ -1,6 +1,7 @@
 import numpy
 import pandas
 
+
 # Load data from the csv file by using pandas and convert it to numpy array
 def import_data():
     # Import data from the Excel file by using pandas
